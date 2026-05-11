@@ -11,7 +11,6 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +187,7 @@ public class FortanixDsmKms implements Kms<String, FortanixDsmKmsEdek> {
         return fortanixDsmUrl;
     }
 
-    private Builder createRequestBuilder(Object request, String path) {
+    private HttpRequest.Builder createRequestBuilder(Object request, String path) {
         var body = getBody(request).getBytes(UTF_8);
 
         return HttpRequest.newBuilder()
@@ -198,7 +197,7 @@ public class FortanixDsmKms implements Kms<String, FortanixDsmKmsEdek> {
                 .POST(HttpRequest.BodyPublishers.ofByteArray(body));
     }
 
-    private <T> CompletableFuture<T> sendAsync(Builder requestBuilder, TypeReference<T> valueTypeRef, BiFunction<URI, Integer, KmsException> exceptionSupplier,
+    private <T> CompletableFuture<T> sendAsync(HttpRequest.Builder requestBuilder, TypeReference<T> valueTypeRef, BiFunction<URI, Integer, KmsException> exceptionSupplier,
                                                Session session) {
 
         var request = requestBuilder.header(AUTHORIZATION_HEADER, session.authorizationHeader())
